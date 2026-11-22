@@ -1,0 +1,14 @@
+# third-party model weights and audio corpora are never redistributed
+models/
+data/p6_whisper_audio/
+data/real_videos/
+
+# unrelated CM-CNN working tree (kept locally, belongs to another project)
+experiments/cm-cnn-production/
+file/
+
+# local build products and caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
