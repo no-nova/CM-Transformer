@@ -113,10 +113,8 @@ sm_120), `transformers` 5.23.0; kernels built with `nvcc` and
 Third-party assets are **not** redistributed: model weights and LibriSpeech audio stay
 under their own licences. The five checkpoints the study consumes are pinned in
 [`MODELS.md`](MODELS.md) — repository, file name, byte size and SHA-256 — and
-`scripts/fetch_models.py` downloads and verifies them into `models/`. Two repository
-links that do **not** match the recorded digests (`Qwen/Qwen3-0.6B-FP8`, a FP8
-checkpoint, and `onnx-community/whisper-base`, ONNX only) are documented there so the
-mismatch is not rediscovered.
+`scripts/fetch_models.py` downloads them into `models/` and verifies both size and
+digest before the files are used.
 
 Also absent: the real-video frames and the result table from the companion CM-CNN study
 (`data/real_videos/`, `experiments/cm-cnn-production/`). Only the video-conditioned

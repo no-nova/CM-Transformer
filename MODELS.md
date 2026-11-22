@@ -31,11 +31,13 @@ downloads from `huggingface.co/<repo>/resolve/main/<file>` otherwise. Set
 `HF_ENDPOINT` to use a mirror (e.g. `https://hf-mirror.com`). Downloads are
 verified against the digests above before being moved into place; a mismatch
 aborts with a non-zero exit code and the partial file is left for inspection.
+A copy populated from a different precision or from an ONNX-only mirror fails
+this check, because both the size and the digest differ.
 
 ### Tokenizer / config files
 
-`tests/test_model_ref.py` reads `models/Qwen3.5-0.8B/config.json` at import time
-and `common.build_tokenizer` reads the tokenizer files, so each directory also
+`tests/test_model_ref.py` reads `models/Qwen3.5-0.8B/config.json` and
+`common.build_tokenizer` reads the tokenizer files, so each directory also
 needs its metadata files. The script fetches the ones used here:
 
 | Directory | Metadata files |
@@ -50,25 +52,6 @@ Only the weight digests are contractual. Upstream may re-upload tokenizer
 metadata; if a tokenizer file has changed, the tests still pass because no result
 depends on byte-identical tokenizer JSON — the prompts are embedded in
 `data/benchmarks/*.jsonl`.
-
-## Confirmed sources, and two variants that would not work
-
-Two variants of row 2 and row 5 circulate and were considered during the
-repository hand-over; neither holds the bytes this study used, so they are
-recorded here rather than rediscovered later:
-
-* **`Qwen/Qwen3-0.6B-FP8`** is the FP8 quantization: `model.safetensors`,
-  1,062,975,744 bytes, `0ea0df1b2e16e0039d33f7381a47a157735963ac201e9dc4780be174a2283510`.
-  The checkpoint used here is the **bf16** `Qwen/Qwen3-0.6B` (1,503,300,328
-  bytes, `f47f7117…`). The two differ in precision, not just packaging; results
-  from one do not carry over to the other.
-* **`onnx-community/whisper-base`** ships ONNX graphs only
-  (`onnx/encoder_model.onnx`, `onnx/decoder_model*.onnx`) and no
-  `model.safetensors`. The PyTorch checkpoint used here (290,403,936 bytes,
-  `07cadb9f…`) is `openai/whisper-base`.
-
-`scripts/fetch_models.py` downloads from the repositories in the table at the top
-of this file; `--check` rejects a directory populated from either variant.
 
 ## Disk and time
 
