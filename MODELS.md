@@ -51,24 +51,24 @@ metadata; if a tokenizer file has changed, the tests still pass because no resul
 depends on byte-identical tokenizer JSON — the prompts are embedded in
 `data/benchmarks/*.jsonl`.
 
-## Two source links that do **not** match the recorded digests
+## Confirmed sources, and two variants that would not work
 
-Both were proposed during the repository hand-over and are recorded here so the
-discrepancy is not rediscovered later:
+Two variants of row 2 and row 5 circulate and were considered during the
+repository hand-over; neither holds the bytes this study used, so they are
+recorded here rather than rediscovered later:
 
-* `Qwen/Qwen3-0.6B-FP8` — that repository ships a **FP8** checkpoint:
-  `model.safetensors`, 1,062,975,744 bytes,
-  `0ea0df1b2e16e0039d33f7381a47a157735963ac201e9dc4780be174a2283510`. The file
-  used here is the **bf16** `Qwen/Qwen3-0.6B` checkpoint (1,503,300,328 bytes,
-  `f47f7117…`). They are different quantizations; results would not carry over.
-* `onnx-community/whisper-base` — that repository contains **ONNX** graphs
+* **`Qwen/Qwen3-0.6B-FP8`** is the FP8 quantization: `model.safetensors`,
+  1,062,975,744 bytes, `0ea0df1b2e16e0039d33f7381a47a157735963ac201e9dc4780be174a2283510`.
+  The checkpoint used here is the **bf16** `Qwen/Qwen3-0.6B` (1,503,300,328
+  bytes, `f47f7117…`). The two differ in precision, not just packaging; results
+  from one do not carry over to the other.
+* **`onnx-community/whisper-base`** ships ONNX graphs only
   (`onnx/encoder_model.onnx`, `onnx/decoder_model*.onnx`) and no
   `model.safetensors`. The PyTorch checkpoint used here (290,403,936 bytes,
   `07cadb9f…`) is `openai/whisper-base`.
 
-`scripts/fetch_models.py` therefore downloads from the repositories in the table
-above; `--check` will reject a directory populated from either of the two
-mismatched sources.
+`scripts/fetch_models.py` downloads from the repositories in the table at the top
+of this file; `--check` rejects a directory populated from either variant.
 
 ## Disk and time
 
@@ -78,6 +78,6 @@ mismatched sources.
 | `python3 verify_official.py` (reference vs official `transformers` forward) | a few minutes on CPU |
 | full P1/P2/P8 sweeps | hours on GPU (CUDA 13.5, sm_120) |
 
-A clone without weights still runs the 60-odd checks that only read the
-committed result JSONs; the model-dependent tests are skipped with the message
-`Qwen3.5-0.8B weights not found — see MODELS.md`.
+A clone without weights still runs the checks that only read the committed result
+JSONs and the delivery manifest (`33 passed, 10 skipped`); the model-dependent modules
+are skipped with a message naming the missing file and pointing here.
