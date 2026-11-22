@@ -4,6 +4,8 @@ Code, evaluation snapshots and manuscript for **CM-Transform**: co-activation pe
 block sparsity with cache-line aligned execution, for transformer inference on commodity
 GPUs and AVX-512 CPUs.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24435107.svg)](https://doi.org/10.5281/zenodo.24435107)
+
 The question the project asks is narrow and practical: feed-forward blocks in modern
 SwiGLU/GELU transformers have no exact-zero structure, so *any* compute saving has to
 come from deciding which 32-lane blocks are worth evaluating — and then from making that

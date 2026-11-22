@@ -38,15 +38,21 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/no-nova/CM-Transformer",
-      "relation": "isSupplementTo",
+      "identifier": "https://github.com/no-nova/CM-Transformer/releases/download/paper2-v1.0.0/CM_Transform_Paper2_Final.pdf",
+      "relation": "isDocumentedBy",
+      "scheme": "url",
+      "resource_type": "publication"
+    },
+    {
+      "identifier": "https://github.com/no-nova/CM-CNN",
+      "relation": "isSupplementedBy",
       "scheme": "url",
       "resource_type": "software"
     },
     {
-      "identifier": "https://github.com/no-nova/CM-Transformer/blob/main/paper2_bundle/CM_Transform_Paper2_Final.pdf",
-      "relation": "isDocumentedBy",
-      "scheme": "url",
+      "identifier": "10.5281/zenodo.24435068",
+      "relation": "references",
+      "scheme": "doi",
       "resource_type": "publication"
     }
   ],

@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite the manuscript and this archive."
+title: "CM-Transform: Co-Activation Permuted Block Sparsity and Cache-Line Aligned Execution for Transformer Inference on Commodity Hardware"
+type: software
+version: 1.0.0
+license: Apache-2.0
+doi: 10.5281/zenodo.24435108
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24435108
+    description: "Version 1.0.0 archive"
+  - type: doi
+    value: 10.5281/zenodo.24435107
+    description: "All versions (concept DOI)"
+date-released: 2026-11-22
+repository-code: "https://github.com/no-nova/CM-Transformer"
+url: "https://github.com/no-nova/CM-Transformer/releases/tag/paper2-v1.0.0"
+authors:
+  - family-names: "no-nova"
+    given-names: ""
+abstract: >-
+  Reference implementation, kernels, benchmark drivers and result files for the technical
+  report on co-activation permuted block sparsity: a functionally isomorphic 32-lane permutation
+  of the FFN intermediate dimension, a cross-layer adaptive energy budget instead of a fixed
+  Top-K, and block-major 4.5-bit storage that makes DRAM traffic scale with the skip rate.
+  The report separates what the mechanism buys from where hardware limits stop it.
+keywords:
+  - transformer inference
+  - block sparsity
+  - activation sparsity
+  - AVX-512
+  - CUDA
+  - quantisation
+  - cache-line alignment
+preferred-citation:
+  type: report
+  title: "CM-Transform: Co-Activation Permuted Block Sparsity and Cache-Line Aligned Execution for Transformer Inference on Commodity Hardware"
+  authors:
+    - family-names: "no-nova"
+      given-names: ""
+  year: 2026
+  month: 11
+  version: "1.0.0"
+  doi: 10.5281/zenodo.24435108
+  url: "https://github.com/no-nova/CM-Transformer/releases/download/paper2-v1.0.0/CM_Transform_Paper2_Final.pdf"
