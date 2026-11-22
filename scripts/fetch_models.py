@@ -241,7 +241,7 @@ def main() -> int:
 
     if failures:
         print(f"\n{len(failures)} model(s) failed: {', '.join(failures)}")
-        print("See MODELS.md for the expected digests and the two known source mismatches.")
+        print("See MODELS.md for the expected digests and the note on the FP8 / ONNX variants.")
         return 1
     print(f"\nall {len(keys)} model(s) verified against MODELS.md")
     return 0
