@@ -138,4 +138,8 @@ the submitted version, and `DELIVERY_MANIFEST.md` pins their digests.
 
 ## Licence
 
-Code and manuscript: see [`LICENSE`](LICENSE).
+Code and manuscript: see [`LICENSE`](LICENSE) (Apache-2.0).
+
+Release metadata for DOI minting (title, description, creators, keywords, and the
+list of third-party assets that are not redistributed) lives in
+[`.zenodo.json`](.zenodo.json); Zenodo reads it when a GitHub release is archived.
