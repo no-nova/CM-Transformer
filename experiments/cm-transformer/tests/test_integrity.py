@@ -37,6 +37,7 @@ def test_no_tracked_source_file_was_modified_by_the_experiment():
     # regenerated paper bundle); nothing in src/ or models/ may change.
     allowed_prefix = ("native/cm_production_avx512.cpp",
                       "experiments/cm-cnn-production/",
+                      "experiments/cm-transformer/results/",   # driver outputs
                       "file/cm_cnn_accel_paper/",
                       "paper1_bundle/")
     unexpected = [c for c in changed if not c.startswith(allowed_prefix)]

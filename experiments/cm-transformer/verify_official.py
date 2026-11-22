@@ -121,7 +121,19 @@ def main():
         out["vision"] = rows_v
 
     tag = "" if args.dtype == "float32" else "_" + args.dtype
-    dump_json(out, RESULTS_DIR / f"verify_official{tag}.json")
+    dest = RESULTS_DIR / f"verify_official{tag}.json"
+    if not args.vision and dest.exists():
+        # a text-only run must not erase the vision rows recorded by an earlier
+        # --vision run; keep them and overwrite only the text block
+        try:
+            prev = json.loads(dest.read_text())
+        except (OSError, ValueError):
+            prev = {}
+        else:
+            if prev.get("vision"):
+                out["vision"] = prev["vision"]
+                log("kept the vision rows from the previous run (use --vision to refresh)")
+    dump_json(out, dest)
     worst_t = max(r["max_abs"] for r in out["text"])
     log(f"worst text max|Δ| = {worst_t:.3e}")
     if out["vision"]:
