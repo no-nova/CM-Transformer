@@ -8,6 +8,10 @@ import pytest
 import torch
 import torch.nn.functional as F
 
+from weights_guard import require as _require_weights  # noqa: E402
+
+_require_weights("qwen35_08b")
+
 from bench_text import extract_answer
 from model_ref import (TextBackbone, apply_block_mask, block_energy,
                        keep_mask_from_energy, permute_mlp)

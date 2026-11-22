@@ -9,6 +9,10 @@ import pytest
 import torch
 import torch.nn.functional as F
 
+from weights_guard import require as _require_weights  # noqa: E402
+
+_require_weights("qwen35_08b")
+
 from common import MODEL_DIR, RESULTS_DIR, Weights, build_tokenizer
 from model_ref import (TextBackbone, apply_block_mask, block_energy,
                        keep_mask_from_energy, new_state, permute_mlp)

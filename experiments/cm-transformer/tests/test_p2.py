@@ -9,6 +9,10 @@ import torch
 EXP = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(EXP))
 
+from weights_guard import require as _require_weights  # noqa: E402
+
+_require_weights("qwen35_08b")
+
 from common import RESULTS_DIR, Weights  # noqa: E402
 from model_ref import VisionEncoder  # noqa: E402
 import p2_stream as P  # noqa: E402

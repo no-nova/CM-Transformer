@@ -8,7 +8,8 @@ import numpy as np
 import torch
 from PIL import Image
 
-from common import FRAMES_DIR, REGIMES, REGIME_NAMES, ROOT, MODEL_DIR
+from common import (FRAMES_DIR, REGIMES, REGIME_NAMES, ROOT, MODEL_DIR,
+                    require_paper1_frames)
 
 # Clip-style normalisation used by preprocessor_config.json: mean 0.5, std 0.5
 MEAN = 0.5
@@ -17,7 +18,7 @@ STD = 0.5
 
 def load_regime(name: str, size: int = 224) -> torch.Tensor:
     """[36, 3, size, size] float32 in [-1, 1]."""
-    files = sorted(FRAMES_DIR.glob(f"{name}_{REGIME_NAMES[name]}_*.png"))
+    files = sorted(require_paper1_frames().glob(f"{name}_{REGIME_NAMES[name]}_*.png"))
     assert len(files) == 36, (name, len(files))
     out = []
     for f in files:

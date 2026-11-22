@@ -47,6 +47,8 @@ def test_model_weights_are_byte_identical():
     baseline = RESULTS_DIR / "m0_baseline.json"
     if not baseline.exists():
         pytest.skip("no baseline run recorded")
+    if not SAFETENSORS.exists():
+        pytest.skip("checkpoint not present; see MODELS.md")
     rec = json.loads(baseline.read_text())["arch"]["checkpoint"]
     sha = rec.get("sha256") or rec.get("model_sha256")
     if not sha:
@@ -66,6 +68,8 @@ def test_models_directory_is_read_only_in_code():
 
 
 def test_no_stray_weight_files_in_models():
+    if not MODEL_DIR.is_dir():
+        pytest.skip("checkpoint directory not present; see MODELS.md")
     allowed = {p.name for p in MODEL_DIR.iterdir()}
     assert "model.safetensors" in allowed
     for name in allowed:

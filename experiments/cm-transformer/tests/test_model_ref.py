@@ -8,6 +8,10 @@ import torch
 EXP = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(EXP))
 
+from weights_guard import require as _require_weights  # noqa: E402
+
+_require_weights("qwen35_08b")
+
 from common import MODEL_DIR, RESULTS_DIR, SAFETENSORS, Weights, rms_norm  # noqa: E402
 from model_ref import (TextBackbone, TextCfg, VisionCfg, VisionEncoder,  # noqa: E402
                        apply_block_mask, block_energy, gelu_tanh, keep_mask_from_energy,

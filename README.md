@@ -47,6 +47,9 @@ batch-one GPU decode.
 | `data/benchmarks/` | pinned evaluation splits: WikiText-2, ARC-Easy, BoolQ, PIQA, GSM8K, POPE (read-only, with `manifest.json`) |
 | `data/p6_vlm/` | synthetic multimodal probe images, regenerable with `experiments/cm-transformer/make_p6_vlm.py` |
 | `scripts/download_benchmarks.py` | regenerates `data/benchmarks/` from the HuggingFace datasets-server |
+| `scripts/fetch_models.py` | downloads the five third-party checkpoints and verifies their SHA-256 (see [`MODELS.md`](MODELS.md)) |
+| `scripts/verify.sh` | single verification entry point: dependencies → checkpoint digests → tests → reference-vs-official → artefact digests |
+| `scripts/check_artefacts.py` | re-hashes everything listed in `paper2_bundle/hashes.json` |
 
 `experiments/cm-transformer/REPORT_TEXT.md` is the long-form lab report: it states, for
 every table in the paper, which script produced the numbers and which result file holds
@@ -57,18 +60,39 @@ them.
 ## Reproduce
 
 ```bash
-# 1. correctness gates (numerical invariants, paper-source checks)
-cd experiments/cm-transformer && python3 -m pytest tests/ -q
+# 0. environment
+pip install -r requirements.txt        # CPU verification path (numpy, pytest, torch)
 
-# 2. evaluation splits (already committed; this only verifies/regenerates them)
-python3 scripts/download_benchmarks.py --out data/benchmarks
+# 1. checkpoints (~7.1 GB, third-party; not shipped)
+python3 scripts/fetch_models.py        # or: --check to verify a copy you already have
 
-# 3. figures
+# 2. everything else, in one command
+bash scripts/verify.sh                 # deps -> digests -> 77 tests -> official-forward -> manifest
+bash scripts/verify.sh --fast          # skip the minutes-long official-forward check
+bash scripts/verify.sh --no-model      # no checkpoints needed: data/manifest checks only
+```
+
+What each stage means:
+
+| Stage | Command it runs | Passes when |
+|---|---|---|
+| dependencies | import check | `numpy`, `pytest`, `torch` importable, Python ≥ 3.10 |
+| checkpoints | `scripts/fetch_models.py --check` | five weight files match the sizes/SHA-256 in `MODELS.md` |
+| tests | `pytest tests/ -q` | 77 checks: numerical invariants, kernel gates, paper-source consistency |
+| reference | `verify_official.py` | the in-repo reference forward matches official `transformers` (per-layer `max|Δ| ≤ 1.4e-3`, `cos = 1.000000`) |
+| artefacts | `scripts/check_artefacts.py` | every digest in `paper2_bundle/hashes.json` still matches |
+
+Without `models/`, the model-dependent modules are skipped with a message naming the
+missing file (`pytest tests/ -q` → `33 passed, 10 skipped`), so a clone is usable before
+the 7 GB download finishes.
+
+```bash
+# figures
 cd experiments/cm-transformer
 python make_paper2_figs.py && python make_paper2_fig6.py
 python make_paper2_p8.py          # regenerates ../paper2_bundle/p8_section.typ
 
-# 4. manuscript
+# manuscript
 cd ../../paper2_bundle && typst compile CM_Transform_Paper2.typ CM_Transform_Paper2_Final.pdf
 ```
 
@@ -86,16 +110,24 @@ sm_120), `transformers` 5.23.0; kernels built with `nvcc` and
 
 ## Not in this repository
 
-Third-party assets are **not** redistributed: model weights (Qwen3-0.6B, Qwen3.5-0.8B,
-Qwen3.5-4B-IQ4_NL, whisper-base, SmolVLM2-256M) and LibriSpeech audio stay under their
-own licences and must be obtained from their publishers. `paper2_bundle/hashes.json`
-records the digests of the checkpoints actually used, so a reproduction can confirm it
-holds the same bytes. Compiled kernels (`*.so`, `results/build/`) and cached tensors
-(`*.pt`) are build products and are ignored as well — every one of them is regenerated
-by a script in `experiments/cm-transformer/`.
+Third-party assets are **not** redistributed: model weights and LibriSpeech audio stay
+under their own licences. The five checkpoints the study consumes are pinned in
+[`MODELS.md`](MODELS.md) — repository, file name, byte size and SHA-256 — and
+`scripts/fetch_models.py` downloads and verifies them into `models/`. Two repository
+links that do **not** match the recorded digests (`Qwen/Qwen3-0.6B-FP8`, a FP8
+checkpoint, and `onnx-community/whisper-base`, ONNX only) are documented there so the
+mismatch is not rediscovered.
+
+Also absent: the real-video frames and the result table from the companion CM-CNN study
+(`data/real_videos/`, `experiments/cm-cnn-production/`). Only the video-conditioned
+drivers (`p2_stream.py`, `vlm_eval.py`, `bench_smolvlm.py`) need them, and they raise a
+message pointing at this section instead of a bare `FileNotFoundError`.
 
 Evaluation splits in `data/benchmarks/` keep the licences of their source datasets; see
 `data/benchmarks/README.md`.
+
+Third-party weights are memory-mapped read-only and no script writes under `models/`;
+`tests/test_integrity.py` re-checks the checkpoint digest recorded in the baseline run.
 
 ---
 

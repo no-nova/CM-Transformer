@@ -38,8 +38,31 @@ RESULTS_DIR = EXP_DIR / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 FINAL_JSON = EXP_DIR / "qwen3_5_0_8b_results.json"
 
+# Paper-1 (CM-CNN) inputs.  Neither directory ships with this repository: the
+# 224x224 DERF frames and the paper-1 result table belong to the companion study.
+# Only the video-conditioned drivers (p2_stream.py, vlm_eval.py, bench_smolvlm.py)
+# need them; tests do not.  Access them through require_paper1_*() so a missing
+# copy produces an actionable error instead of a bare FileNotFoundError.
 FRAMES_DIR = ROOT / "data" / "real_videos" / "frames_224"
 PAPER1_RESULTS = ROOT / "experiments" / "cm-cnn-production" / "real_video_results.json"
+
+_PAPER1_HINT = (
+    "not shipped with this repository; see the 'Not in this repository' section of "
+    "README.md (these are Paper-1 artefacts: DERF frames plus "
+    "experiments/cm-cnn-production/real_video_results.json)"
+)
+
+
+def require_paper1_frames() -> Path:
+    if not FRAMES_DIR.is_dir():
+        raise FileNotFoundError(f"frame directory {FRAMES_DIR} is {_PAPER1_HINT}")
+    return FRAMES_DIR
+
+
+def require_paper1_results() -> Path:
+    if not PAPER1_RESULTS.exists():
+        raise FileNotFoundError(f"result table {PAPER1_RESULTS} is {_PAPER1_HINT}")
+    return PAPER1_RESULTS
 
 REGIMES = ["V1", "V2", "V3", "V4", "V5", "V6"]
 REGIME_NAMES = {

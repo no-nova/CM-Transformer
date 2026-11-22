@@ -1,0 +1,12 @@
+# Verification on CPU (about 13 s of tests once the checkpoints are present).
+# For the GPU sweeps that produced the paper's latency numbers, install the CUDA
+# build of torch 2.15.0 (cu13.5) for sm_120 instead; the code itself is unchanged.
+numpy>=2.0
+pytest>=8.0
+torch==2.15.0
+
+# Optional: only needed by `verify_official.py` (reference vs official forward)
+# and by `scripts/fetch_models.py` when downloading through huggingface_hub.
+#   transformers==5.23.0
+#   huggingface_hub>=0.30
+#   matplotlib>=3.8          # figure scripts in paper2_bundle/
