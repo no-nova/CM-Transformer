@@ -1,16 +1,15 @@
 # Paper 2 bundle — CM-Transform (text LLM inference acceleration)
 
-Final manuscript: `CM_Transform_Paper2_Final.pdf` (17 pages, vector figures).
+Final manuscript: `CM_Transform_Paper2_Final.pdf` (20 pages, vector figures).
 
 ## Contents
 
 | File | What it is |
 |---|---|
 | `CM_Transform_Paper2.typ` | complete manuscript source (Typst 0.13) |
-| `CM_Transform_Paper2_Final.pdf` | compiled PDF (letter, 17 pages) |
+| `CM_Transform_Paper2_Final.pdf` | compiled PDF (letter, 20 pages) |
 | `p8_section.typ`, `extra_section.typ` | generated sections (defence experiments, kernel microbenchmarks), spliced into the source |
 | `figures/fig1_ppl_tau.svg` … `fig6_frontier.svg` | all six figures, vector SVG |
-| `CM_Transform_Paper2.pdf` | superseded 8-page draft (kept for provenance) |
 
 ## Rebuild
 
