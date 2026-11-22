@@ -1,19 +1,27 @@
 {
   "title": "CM-Transform: Co-Activation Permuted Block Sparsity and Cache-Line Aligned Execution for Transformer Inference on Commodity Hardware",
-  "description": "<p>Reference implementation, evaluation harness and result snapshots for the CM-Transform study. The work asks a narrow question: feed-forward blocks in modern SwiGLU/GELU transformers carry no exact-zero structure, so any compute saving must come from deciding which 32-lane blocks are worth evaluating, and from making that decision cheap enough to survive contact with real memory traffic.</p><p>What the repository contains: the reference forward pass of the five checkpoints used (Qwen3-0.6B, Qwen3.5-0.8B, Qwen3.5-4B-IQ4_NL, whisper-base, SmolVLM2-256M-Video-Instruct) written as plain weight dictionaries, functionally isomorphic 32-lane permutations of the FFN intermediate dimension, per-layer adaptive energy thresholds with norm-preserving rescaling, block-major IQ4_NL repacking inside 64-byte cache lines, CUDA / AVX-512 / scalar kernels, every benchmark driver behind the paper, the raw result JSONs, and the compiled manuscript.</p><p>Headline measurements on one consumer GPU (RTX 5070 Laptop, 8 GB) and one Zen 5 CPU: a functionally isomorphic permutation reproduces the dense forward pass to 1e-7; at a matched 20% skip budget on Qwen3.5-0.8B the WikiText-2 perplexity cost is +1.68 (6.2%) against +2.41 for CATS-Block, +2.30 for TEAL-Block and +13.17 for Wanda-style block pruning; block-major IQ4_NL gives 1.74x at 0% skip and 3.84-5.67x at 20-80% skip on a cold single layer; the whisper encoder keeps WER 6.21% with 20% of blocks removed (6.08% dense). The paper also reports the byte ceilings that bound decode-time numbers, the dispatch-cost boundary where skipping loses to dense execution, and the measurements where skipping loses.</p><p>Reproduction: <code>pip install -r requirements.txt</code>, <code>python3 scripts/fetch_models.py</code> (third-party checkpoints, not redistributed; pinned by size and SHA-256 in MODELS.md), then <code>bash scripts/verify.sh</code> (dependency check, checkpoint digests, 77 tests, reference-vs-official forward comparison, artefact digests). Without the checkpoints the suite still runs 33 checks and skips the model-dependent modules. Result files carry their seed (1234) and the exact checkpoint digest they were produced from.</p>",
-  "creators": [
-    {
-      "name": "no-nova",
-      "type": "Other"
-    }
-  ],
   "upload_type": "software",
   "access_right": "open",
   "license": "Apache-2.0",
   "language": "eng",
   "version": "1.0.0",
+  "publication_date": "2026-11-22",
+  "creators": [
+    {
+      "name": "no-nova",
+      "affiliation": "Independent"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "no-nova",
+      "type": "ContactPerson"
+    }
+  ],
+  "description": "<p>Reference implementation, evaluation harness and result snapshots for the CM-Transform study. The work asks a narrow question: feed-forward blocks in modern SwiGLU/GELU transformers carry no exact-zero structure, so any compute saving must come from deciding which 32-lane blocks are worth evaluating, and from making that decision cheap enough to survive contact with real memory traffic.</p><p>What the repository contains: the reference forward pass of the five checkpoints used (Qwen3-0.6B, Qwen3.5-0.8B, Qwen3.5-4B-IQ4_NL, whisper-base, SmolVLM2-256M-Video-Instruct) written as plain weight dictionaries, functionally isomorphic 32-lane permutations of the FFN intermediate dimension, per-layer adaptive energy thresholds with norm-preserving rescaling, block-major IQ4_NL repacking inside 64-byte cache lines, CUDA / AVX-512 / scalar kernels, every benchmark driver behind the paper, the raw result JSONs, and the compiled manuscript.</p><p>Headline measurements on one consumer GPU (RTX 5070 Laptop, 8 GB) and one Zen 5 CPU: a functionally isomorphic permutation reproduces the dense forward pass to 1e-7; at a matched 20% skip budget on Qwen3.5-0.8B the WikiText-2 perplexity cost is +1.68 (6.2%) against +2.41 for CATS-Block, +2.30 for TEAL-Block and +13.17 for Wanda-style block pruning; block-major IQ4_NL gives 1.74x at 0% skip and 3.84-5.67x at 20-80% skip on a cold single layer; the whisper encoder keeps WER 6.21% with 20% of blocks removed (6.08% dense). The paper also reports the byte ceilings that bound decode-time numbers, the dispatch-cost boundary where skipping loses to dense execution, and the measurements where skipping loses.</p><p>Reproduction: <code>pip install -r requirements.txt</code>, <code>python3 scripts/fetch_models.py</code> (third-party checkpoints, not redistributed; pinned by size and SHA-256 in MODELS.md), then <code>bash scripts/verify.sh</code> (dependency check, checkpoint digests, 77 tests, reference-vs-official forward comparison, artefact digests). Without the checkpoints the suite still runs 33 checks and skips the model-dependent modules. Result files carry their seed (1234) and the exact checkpoint digest they were produced from.</p><p>The manuscript is <code>paper2_bundle/CM_Transform_Paper2_Final.pdf</code> (Typst source alongside it, 20 pages, 45 tables, 6 figures). It was typeset while the code lived at <code>github.com/no-nova/CM-CNN</code>, so its title-page link names that path; this repository is the canonical home of the code, results and manuscript.</p>",
   "keywords": [
     "transformer inference",
+    "activation sparsity",
     "structured sparsity",
     "block sparsity",
     "feed-forward network",
@@ -21,15 +29,42 @@
     "CUDA",
     "quantization",
     "IQ4_NL",
+    "GGUF",
     "cache-line alignment",
+    "LLM efficiency",
+    "vision-language models",
+    "speech recognition",
     "reproducibility"
   ],
   "related_identifiers": [
     {
       "identifier": "https://github.com/no-nova/CM-Transformer",
       "relation": "isSupplementTo",
-      "scheme": "url"
+      "scheme": "url",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/no-nova/CM-Transformer/blob/main/paper2_bundle/CM_Transform_Paper2_Final.pdf",
+      "relation": "isDocumentedBy",
+      "scheme": "url",
+      "resource_type": "publication"
     }
   ],
-  "notes": "Third-party checkpoints (Qwen3-0.6B, Qwen3.5-0.8B, Qwen3.5-4B-IQ4_NL, whisper-base, SmolVLM2-256M-Video-Instruct) and the LibriSpeech audio are not redistributed: they remain under their own licences. MODELS.md records the source repository, file name, byte size and SHA-256 of each weight file, and scripts/fetch_models.py re-verifies them. The real-video frames and the result table of the companion CM-CNN study are likewise absent; only the video-conditioned drivers need them and they say so explicitly. Compiled kernels (*.so, results/build/) and cached tensors (*.pt) are build products and are regenerated by the scripts in experiments/cm-transformer/."
+  "references": [
+    "Liu et al. Deja Vu: Contextual Sparsity for Efficient LLMs at Inference Time. ICML 2023.",
+    "Xue et al. PowerInfer: Fast Large Language Model Serving with a Consumer-grade GPU. SOSP 2024.",
+    "Lee et al. Training-free Activation Sparsity in Large Language Models. EMNLP 2024 (CATS).",
+    "Liu et al. TEAL: Training-free Activation Sparsity for LLM Acceleration. arXiv:2408.14690, 2024.",
+    "Sun et al. A Simple and Effective Pruning Approach for Large Language Models. ICLR 2024 (Wanda).",
+    "Frantar, Alistarh. SparseGPT: Massive Language Models Can Be Accurately Pruned in One-Shot. ICML 2023.",
+    "Lin et al. AWQ: Activation-aware Weight Quantization for On-Device LLM Compression and Acceleration. MLSys 2024.",
+    "Frantar et al. GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers. ICLR 2023.",
+    "Dao et al. FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. NeurIPS 2022.",
+    "Shazeer. GLU Variants Improve Transformer. arXiv:2002.05202, 2020.",
+    "Qwen Team. Qwen3 Technical Report. arXiv:2505.09388, 2025.",
+    "Radford et al. Robust Speech Recognition via Large-Scale Weak Supervision. ICML 2023 (Whisper).",
+    "Marafioti et al. SmolVLM: Redefining Small and Efficient Multimodal Models. arXiv, 2025.",
+    "Cobbe et al. Training Verifiers to Solve Math Word Problems. arXiv:2110.14168, 2021 (GSM8K)."
+  ],
+  "notes": "Third-party checkpoints (Qwen3-0.6B, Qwen3.5-0.8B, Qwen3.5-4B-IQ4_NL, whisper-base, SmolVLM2-256M-Video-Instruct) and the LibriSpeech audio are not redistributed: they remain under their own licences. MODELS.md records the source repository, file name, byte size and SHA-256 of each weight file, and scripts/fetch_models.py re-verifies them. The real-video frames and the result table of the companion CM-CNN study are likewise absent; only the video-conditioned drivers need them and they say so explicitly. Compiled kernels (*.so, results/build/) and cached tensors (*.pt) are build products and are regenerated by the scripts in experiments/cm-transformer/. Evaluation splits in data/benchmarks/ keep the licences of their source datasets: WikiText-2 CC BY-SA 3.0, ARC CC BY-SA 4.0, BoolQ CC BY-SA 3.0, PIQA AFL-3.0, GSM8K MIT, POPE BSD-3-Clause."
 }
