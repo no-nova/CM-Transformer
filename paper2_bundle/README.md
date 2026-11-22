@@ -14,7 +14,7 @@ Final manuscript: `CM_Transform_Paper2_Final.pdf` (20 pages, vector figures).
 ## Rebuild
 
 ```sh
-# figures (needs matplotlib from /home/user/.venvs/qwen5)
+# figures (needs matplotlib)
 cd ../experiments/cm-transformer
 python make_paper2_figs.py
 python make_paper2_fig6.py
@@ -45,7 +45,10 @@ Typst is used because this host has no TeX distribution (`pdflatex`, `xelatex`,
 All JSON files carry `seed: 1234`. Datasets are pinned by SHA-256 in
 `../data/benchmarks/manifest.json` (GSM8K-200 subset:
 `72813874f21da675e729ba2d8de858ff001ed23f062e6c963bbf51b4a044786f`).
-`models/` is read-only; `git diff -- src/lib/codec.ts` is empty.
+`models/` is never written: the safetensors file is memory-mapped read-only and the
+GGUF is opened `"rb"`. `tests/test_integrity.py` re-checks that no tracked source
+changed during the study; the checkpoints themselves are pinned by digest in
+[`../MODELS.md`](../MODELS.md).
 
 ## Rebuild commands (development notes — not part of the manuscript)
 
@@ -59,7 +62,7 @@ python p8_reviewer_defense.py --task perm && python p8_system.py --device cuda
 python scripts/p10_4b_closure.py --task bridge
 python scripts/p10_extras.py --task genprompt,calibtail,corr
 python scripts/p10_width.py --reps 5
-pytest tests/ -q          # 75 tests
+pytest tests/ -q          # 77 tests with the checkpoints present
 ```
 
 Typesetting: no TeX distribution is installed on the build host (pdflatex, xelatex
